@@ -1,0 +1,23 @@
+console.log("Hare Krishna...");
+
+const express = require("express");
+const dotenv = require("dotenv").config();
+const apiRoutes = require('./routes/apiRoutes');
+
+const app = express();
+
+const port = process.env.PORT || 5000;
+
+app.use('/api',apiRoutes);
+
+app.get('/', (req, res) => {
+    res.send("Yepp!! It's working..");
+})
+
+// app.get('/api', (req, res) => {
+//     res.status(200).json({message : "API is being called!!"});
+// })
+
+app.listen(port, () => {
+    console.log(`Server running at port ${port}`);
+})
