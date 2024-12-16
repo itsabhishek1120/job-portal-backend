@@ -3,12 +3,15 @@ console.log("Hare Krishna...");
 const express = require("express");
 const dotenv = require("dotenv").config();
 const apiRoutes = require('./routes/apiRoutes');
+const errorHandler = require("./middleware/errorHandler");
 
 const app = express();
 
 const port = process.env.PORT || 5000;
 
+app.use(express.json());
 app.use('/api',apiRoutes);
+app.use(errorHandler);
 
 app.get('/', (req, res) => {
     res.send("Yepp!! It's working..");
