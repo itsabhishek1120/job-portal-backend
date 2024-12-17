@@ -7,7 +7,7 @@ const errorHandler = require("./middleware/errorHandler");
 
 const app = express();
 
-const port = process.env.PORT || 5000;
+const port = (process.env.ENV == "DEV") ? 5000 : process.env.PORT;
 
 app.use(express.json());
 app.use('/api',apiRoutes);
