@@ -26,7 +26,10 @@ module.exports.login = async (req, res, next) => {
         return res.status(401).json({ success: false, message: 'Invalid credentials',  pass: isPass});
     }
     const token = jwt.sign({ id: userData.id, email: userData.email }, SECRET_KEY, { expiresIn: '1h' });
-    res.status(200).json({ success: true, message: 'Auth Generated Successfully',  token: token });
-    return next(res);
+    res.status(200).json({
+        success: true, 
+        message: 'Auth Generated Successfully', 
+        token: token 
+    });
 
 }; 
