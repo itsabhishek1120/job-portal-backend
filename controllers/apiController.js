@@ -1,5 +1,6 @@
 //Controller for the APIs
-const users = require('../modules/users');
+const usersModule = require('../modules/users');
+const loginModule = require('../modules/login');
 
 const getdashboard = (req, res) => {
     res.status(200).json({message : `This is Get Dashboard Api.`});
@@ -16,11 +17,16 @@ const postdashboard = (req, res) => {
 }
 
 const getUser = (req, res, next) => {
-    users.getUser(req, res, next);
+    usersModule.getUser(req, res, next);
+}
+
+const login = (req, res, next) => {
+    loginModule.login(req, res, next);
 }
 
 module.exports = {
     getdashboard,
     postdashboard,
-    getUser
+    getUser,
+    login
 };
