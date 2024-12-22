@@ -14,11 +14,16 @@ module.exports.getUser = async (req, res, next) => {
         const query = `select * from job_portal.users u where u.email = '${email}' and u.password = '${password}' and u.deleted = false`;
         console.log("Query :",query);
         let user = await getData(query);
-        if(!user.length)
-            res.message = "No user data found."
+        if(!user.length){
+            res.status(200).json({
+                success: false,
+                message: "No user data found.",
+                data: user
+            });
+        }
         console.log("User Data :",user);
-        res.json({
-            title: "Success",
+        res.status(200).json({
+            success: true,
             message: res.message || "Data fetched successfully.",
             data: user
         });

@@ -3,6 +3,7 @@ console.log("Hare Krishna...");
 const express = require("express");
 const dotenv = require("dotenv").config();
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const apiRoutes = require('./routes/apiRoutes');
 const errorHandler = require("./middleware/errorHandler");
 
@@ -10,7 +11,13 @@ const app = express();
 
 const port = (process.env.ENV == "DEV") ? 5000 : process.env.PORT;
 
-app.use(cors());
+app.use(cookieParser());
+app.use(
+    cors({
+      origin: (process.env.ENV == "DEV") ? "http://localhost:4200" : "https://job-market-insight.netlify.app",
+      credentials: true,
+    })
+  );
 app.use(express.json());
 app.use('/api',apiRoutes);
 app.use(errorHandler);

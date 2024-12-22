@@ -14,22 +14,31 @@ module.exports.login = async (req, res, next) => {
     let user = await getData(query);
     console.log("User :", user);
     if (!user.length) {
-        res.status(400).json({ success: false, message: 'No user found.'});
+        res.status(200).json({ success: false, message: 'No user found.'});
+    } else {
+        const userData = user[0];
+        // const salt = await bcrypt.genSalt(10);
+        //   const hashedPassword = await bcrypt.hash('testing@123', salt);
+        //   console.log("Hashed Pass::",hashedPassword);
+        const isPass = await bcrypt.compare(password, userData.password)
+        console.log(">>>>>>", isPass);
+        if (!userData || !isPass) {
+            return res.status(401).json({ success: false, message: 'Invalid credentials',  pass: isPass});
+        }
+        
+        const token = jwt.sign({ id: userData.id, email: userData.email }, SECRET_KEY, { expiresIn: '1h' });
+        res.cookie('token', token, {
+            httpOnly: true,  // Prevent access to the cookie via JavaScript
+            secure: process.env.ENV !== "DEV", // Set Secure flag in production
+            sameSite: process.env.ENV === 'DEV' ? 'Strict' : 'None', // Controls cross-origin cookie sending
+            maxAge: 60 * 60 * 1000, // 1 hour expiry
+        });
+
+        res.status(200).json({
+            success: true, 
+            message: 'Auth Generated Successfully', 
+            // token: token 
+        });
     }
-    const userData = user[0];
-    // const salt = await bcrypt.genSalt(10);
-    //   const hashedPassword = await bcrypt.hash('testing@123', salt);
-    //   console.log("Hashed Pass::",hashedPassword);
-    const isPass = await bcrypt.compare(password, userData.password)
-    console.log(">>>>>>", isPass);
-    if (!userData || !isPass) {
-        return res.status(401).json({ success: false, message: 'Invalid credentials',  pass: isPass});
-    }
-    const token = jwt.sign({ id: userData.id, email: userData.email }, SECRET_KEY, { expiresIn: '1h' });
-    res.status(200).json({
-        success: true, 
-        message: 'Auth Generated Successfully', 
-        token: token 
-    });
 
 }; 

@@ -12,7 +12,13 @@ async function getData(query) {
   try {
     const { rows } = await client.query(query);
     return rows;
-  } finally {
+  }
+  catch(error){
+    console.log("Database Error:", error?.message);
+    console.log("Stack Trace:", error?.stack);
+    return null;
+  } 
+  finally {
     console.log("Releasing Connection.");
     client.release();
   }
