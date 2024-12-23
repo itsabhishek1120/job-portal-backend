@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const getData = require("../config/database");
+const executeQuery = require("../config/database");
 
 const SECRET_KEY = process.env.PASS_SECRET;
 
@@ -11,7 +11,7 @@ module.exports.login = async (req, res, next) => {
         res.status(400).json({ success: false, message: 'Please enter Email and Password.'});
     }
     const query = `select * from job_portal.users u where u.email = '${email}' and u.deleted = false`;
-    let user = await getData(query);
+    let user = await executeQuery(query);
     console.log("User :", user);
     if (!user.length) {
         res.status(200).json({ success: false, message: 'No user found.'});
@@ -36,7 +36,7 @@ module.exports.login = async (req, res, next) => {
 
         res.status(200).json({
             success: true, 
-            message: 'Auth Generated Successfully', 
+            message: 'Loged In Successfully', 
             // token: token 
         });
     }

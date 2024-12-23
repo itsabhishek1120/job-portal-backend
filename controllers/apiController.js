@@ -20,6 +20,10 @@ const getUser = (req, res, next) => {
     usersModule.getUser(req, res, next);
 }
 
+const createUser = (req, res, next) => {
+    usersModule.createUser(req, res, next);
+}
+
 const login = (req, res, next) => {
     loginModule.login(req, res, next);
 }
@@ -28,5 +32,6 @@ module.exports = {
     getdashboard,
     postdashboard,
     getUser,
-    login
+    login,
+    createUser
 };

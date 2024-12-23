@@ -7,12 +7,12 @@ const pool = new Pool({
   },
 });
 
-async function getData(query) {
+async function executeQuery(query, values = []) {
   const client = await pool.connect();
   try {
-    const { rows } = await client.query(query);
-    return rows;
-  }
+    const result = await client.query(query, values);
+    return result.rows;
+  } 
   catch(error){
     console.log("Database Error:", error?.message);
     console.log("Stack Trace:", error?.stack);
@@ -24,4 +24,4 @@ async function getData(query) {
   }
 }
 
-module.exports = getData;
+module.exports = executeQuery;
