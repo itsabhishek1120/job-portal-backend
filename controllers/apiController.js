@@ -24,6 +24,10 @@ const createUser = (req, res, next) => {
     usersModule.createUser(req, res, next);
 }
 
+const createEmployer = (req, res, next) => {
+    usersModule.createEmployer(req, res, next);
+}
+
 const login = (req, res, next) => {
     loginModule.login(req, res, next);
 }
@@ -33,5 +37,6 @@ module.exports = {
     postdashboard,
     getUser,
     login,
-    createUser
+    createUser,
+    createEmployer
 };

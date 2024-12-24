@@ -98,3 +98,63 @@ module.exports.createUser = async (req, res, next) => {
     }
 
 }
+
+module.exports.createEmployer = async (req, res, next) => {
+    //check required fields
+    const requiredFields = [ 'employer_name', 'employer_contact', 'employer_address', 'employer_email', 'employer_password' ];
+    const missingFields = requiredFields.filter((field) => !req.body[field]);
+    if (missingFields.length > 0) {
+        return res.status(400).json({
+            success: false,
+            message: "Missing required parameters.",
+            missingFields: missingFields,
+        });
+    }
+    //API body
+    const { employer_name, employer_contact, employer_address, employer_email, employer_password } = req.body;
+
+    //Check if Employer already exists with Email
+    const checkEmployerQuery = `select * from job_portal.employers e where e.email = '${employer_email}' and e.deleted = false`;
+    console.log("checkEmployerQuery :",checkEmployerQuery);
+    let isEmployerExist = await executeQuery(checkEmployerQuery);
+    console.log("Employerrr:",isEmployerExist);
+    if(isEmployerExist.length > 0){
+        res.status(200).json({
+            success: false,
+            message: "Employer already exist with this Email",
+        });
+    } 
+    else {
+        try {
+            //Hash the Password
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(employer_password, salt);
+            console.log("Hashed Password :",hashedPassword);
+            const insertQuery = `INSERT INTO job_portal.employers (company_name, contact, address, email, password) VALUES ($1, $2, $3, $4, $5) RETURNING *;`;
+            const values = [employer_name, employer_contact, employer_address, employer_email, hashedPassword];
+            const result = await executeQuery(insertQuery, values);
+            const newEmployer = result[0];
+            console.log("newEmployer>>>",newEmployer);
+
+            const token = jwt.sign({ id: newEmployer.id, email: newEmployer.email }, process.env.PASS_SECRET, { expiresIn: '1h' });
+            res.cookie('token', token, {
+                httpOnly: true,
+                secure: process.env.ENV !== "DEV",
+                sameSite: process.env.ENV === 'DEV' ? 'Strict' : 'None',
+                maxAge: 60 * 60 * 1000, // 1 hour
+            });
+        
+            res.status(201).json({
+                success: true,
+                message: 'Sign Up Successful'
+            });
+        } catch (error) {
+            console.log('Error Inserting Employer:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Failed to create Employer'
+            });
+        }
+    }
+
+}

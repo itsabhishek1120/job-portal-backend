@@ -6,7 +6,8 @@ const {
     postdashboard,
     getUser,
     login,
-    createUser
+    createUser,
+    createEmployer
 } = require('../controllers/apiController');
 
 router.route('/get-dashboard').get(getdashboard);
@@ -18,5 +19,7 @@ router.route('/get-user').get(authenticateJWT,getUser);
 router.route('/login').post(login);
 
 router.route('/signup-user').post(createUser);
+
+router.route('/signup-employer').post(createEmployer);
 
 module.exports = router;
