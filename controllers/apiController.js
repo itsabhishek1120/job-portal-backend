@@ -1,6 +1,7 @@
 //Controller for the APIs
 const usersModule = require('../modules/users');
 const loginModule = require('../modules/login');
+const jobsModule = require('../modules/jobs');
 
 const getdashboard = (req, res) => {
     res.status(200).json({message : `This is Get Dashboard Api.`});
@@ -32,11 +33,16 @@ const login = (req, res, next) => {
     loginModule.login(req, res, next);
 }
 
+const postJob = (req, res, next) => {
+    jobsModule.postJob(req, res, next);
+}
+
 module.exports = {
     getdashboard,
     postdashboard,
     getUser,
     login,
     createUser,
-    createEmployer
+    createEmployer,
+    postJob
 };
