@@ -58,3 +58,26 @@ module.exports.logout = (req, res, next) => {
         message: 'Logged Out Successfully',
     });
 };
+
+module.exports.verifyToken = (req, res, next) => {
+    try {
+        if(!req?.user || !req?.user?.email || req?.user?.email==''){
+            res.status(401).json({
+                success: false,
+                message: 'Token Missing or Invalid/Expired',
+            });
+        } else{
+            console.log("Verify user..",req?.user);
+            res.status(200).json({
+                success: true,
+                message: 'User Token Verified',
+                user : req?.user?.email
+            });
+        }
+    } catch (error) {
+        res.status(401).json({
+            success: false,
+            message: 'Token Missing or Invalid',
+        });
+    }
+};

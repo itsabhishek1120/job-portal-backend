@@ -37,6 +37,10 @@ const logout = (req, res, next) => {
     loginModule.logout(req, res, next);
 }
 
+const verifyToken = (req, res, next) => {
+    loginModule.verifyToken(req, res, next);
+}
+
 const postJob = (req, res, next) => {
     jobsModule.postJob(req, res, next);
 }
@@ -47,6 +51,7 @@ module.exports = {
     getUser,
     login,
     logout,
+    verifyToken,
     createUser,
     createEmployer,
     postJob

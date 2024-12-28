@@ -7,6 +7,7 @@ const {
     getUser,
     login,
     logout,
+    verifyToken,
     createUser,
     createEmployer,
     postJob
@@ -21,6 +22,8 @@ router.route('/get-user').get(authenticateJWT, getUser);
 router.route('/login').post(login);
 
 router.route('/logout').post(logout);
+
+router.route('/verify-token').get(authenticateJWT, verifyToken);
 
 router.route('/signup-user').post(createUser);
 
