@@ -42,3 +42,19 @@ module.exports.login = async (req, res, next) => {
     }
 
 }; 
+
+module.exports.logout = (req, res, next) => {
+    const { email } = req.body;
+    console.log("LogOut User..",email);
+    res.clearCookie('token', {
+        httpOnly: true,  // Prevent access to the cookie via JavaScript
+        secure: process.env.ENV !== "DEV",  // Set Secure flag in production
+        sameSite: process.env.ENV === 'DEV' ? 'Strict' : 'None',  // Controls cross-origin cookie sending
+        maxAge: 0,  // Expire the cookie immediately
+    });
+
+    res.status(200).json({
+        success: true,
+        message: 'Logged Out Successfully',
+    });
+};

@@ -6,6 +6,7 @@ const {
     postdashboard,
     getUser,
     login,
+    logout,
     createUser,
     createEmployer,
     postJob
@@ -18,6 +19,8 @@ router.route('/post-dashboard').post(postdashboard);
 router.route('/get-user').get(authenticateJWT, getUser);
 
 router.route('/login').post(login);
+
+router.route('/logout').post(logout);
 
 router.route('/signup-user').post(createUser);
 

@@ -33,6 +33,10 @@ const login = (req, res, next) => {
     loginModule.login(req, res, next);
 }
 
+const logout = (req, res, next) => {
+    loginModule.logout(req, res, next);
+}
+
 const postJob = (req, res, next) => {
     jobsModule.postJob(req, res, next);
 }
@@ -42,6 +46,7 @@ module.exports = {
     postdashboard,
     getUser,
     login,
+    logout,
     createUser,
     createEmployer,
     postJob
