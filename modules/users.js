@@ -158,3 +158,152 @@ module.exports.createEmployer = async (req, res, next) => {
     }
 
 }
+
+module.exports.getUserProfile = async (req, res, next) => {
+    const {email} = req.query;
+    console.log("Params :",req.query);
+    if(!email){
+        res.status(400);
+        res.message = "Email Param Missing.";
+        return next(res);
+    }
+
+    try {
+        const checkUserQuery = `SELECT * FROM job_portal.user_profile WHERE email = $1;`;
+        console.log("Query:",checkUserQuery);
+        let existingUser = await executeQuery(checkUserQuery, [email]);
+        console.log("User Profile Data :",existingUser);
+        if (existingUser.length > 0) {
+            existingUser = existingUser[0];
+            let respbody = {
+                currentJobTitle: existingUser.current_job_title,
+                experience: existingUser.experience,
+                currentCompany: existingUser.current_company,
+                noticePeriod: existingUser.notice_period,
+                profilePicture: existingUser.profile_picture || '',
+                highestQualification: existingUser.highest_qualification,
+                fieldOfStudy: existingUser.field_of_study,
+                instituteName: existingUser.institute_name,
+                graduationYear: existingUser.graduation_year,
+                skills: existingUser.skills,
+                portfolio: existingUser.portfolio,
+                linkedin: existingUser.linkedin,
+                github: existingUser.github,
+                otherProfile: existingUser.other_profile,
+              };
+            console.log("respbody:",respbody);
+            res.status(200).json({
+                success: true,
+                message: "User Profile found.",
+                data: respbody
+            });
+        } else {
+            res.status(200).json({
+                success: false,
+                message: "No User Profile data exists."
+            });
+        }
+    } catch (error) {
+        console.log('Error getting user profile:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to get user profile'
+        });
+    }
+}
+
+module.exports.editUserProfile = async (req, res, next) => {
+    // Check required fields
+    const requiredFields = [
+        'email',
+        // 'currentJobTitle',
+        // 'experience',
+        // 'currentCompany',
+        // 'noticePeriod',
+        // 'highestQualification',
+        // 'fieldOfStudy',
+        // 'instituteName',
+        // 'graduationYear',
+        // 'skills'
+    ];
+    const missingFields = requiredFields.filter((field) => !req.body[field]);
+    if (missingFields.length > 0) {
+        return res.status(200).json({
+            success: false,
+            message: "Missing required parameters.",
+            missingFields: missingFields,
+        });
+    }
+
+    // API body
+    const { email, currentJobTitle, experience, currentCompany, noticePeriod, profilePicture = null, highestQualification, fieldOfStudy, instituteName, graduationYear, skills, portfolio, linkedin, github, otherProfile } = req.body;
+
+    try {
+        // Check if user already exists
+        const checkUserQuery = `SELECT * FROM job_portal.user_profile WHERE email = $1;`;
+        const existingUser = await executeQuery(checkUserQuery, [email]);
+
+        if (existingUser.length > 0) {
+            const existingData = existingUser[0];
+
+            // Compare existing data with incoming data
+            const updates = {};
+            const isValid = (value) => value !== undefined;
+
+            if (isValid(currentJobTitle) && existingData.current_job_title !== currentJobTitle) updates.current_job_title = currentJobTitle;
+            if (isValid(experience) && existingData.experience !== experience) updates.experience = experience;
+            if (isValid(currentCompany) && existingData.current_company !== currentCompany) updates.current_company = currentCompany;
+            if (isValid(noticePeriod) && existingData.notice_period !== noticePeriod) updates.notice_period = noticePeriod;
+            if (isValid(profilePicture) && existingData.profile_picture !== profilePicture) updates.profile_picture = profilePicture;
+            if (isValid(highestQualification) && existingData.highest_qualification !== highestQualification) updates.highest_qualification = highestQualification;
+            if (isValid(fieldOfStudy) && existingData.field_of_study !== fieldOfStudy) updates.field_of_study = fieldOfStudy;
+            if (isValid(instituteName) && existingData.institute_name !== instituteName) updates.institute_name = instituteName;
+            if (isValid(graduationYear) && existingData.graduation_year !== graduationYear) updates.graduation_year = graduationYear;
+            if (isValid(skills) && JSON.stringify(existingData.skills) !== JSON.stringify(skills)) updates.skills = skills;
+            if (isValid(portfolio) && existingData.portfolio !== portfolio) updates.portfolio = portfolio;
+            if (isValid(linkedin) && existingData.linkedin !== linkedin) updates.linkedin = linkedin;
+            if (isValid(github) && existingData.github !== github) updates.github = github;
+            if (isValid(otherProfile) && existingData.other_profile !== otherProfile) updates.other_profile = otherProfile;
+
+
+            if (Object.keys(updates).length > 0) {
+                // Build dynamic update query
+                const setClause = Object.keys(updates).map((key, index) => `${key} = $${index + 2}`).join(", ");
+                const updateQuery = `UPDATE job_portal.user_profile SET ${setClause} WHERE email = $1 RETURNING *;`;
+                const updateValues = [email, ...Object.values(updates)];
+                const updatedUser = await executeQuery(updateQuery, updateValues);
+
+                return res.status(200).json({
+                    success: true,
+                    message: "User profile updated successfully.",
+                    userProfile: updatedUser[0]
+                });
+            } else {
+                return res.status(200).json({
+                    success: true,
+                    message: "No changes detected, user profile remains unchanged.",
+                    userProfile: existingData
+                });
+            }
+        } else {
+            // Insert new user profile
+            const insertQuery = `INSERT INTO job_portal.user_profile ( email, current_job_title, experience, current_company, notice_period, profile_picture, highest_qualification, field_of_study, institute_name, graduation_year, skills, portfolio, linkedin, github, other_profile ) VALUES ( $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15 ) RETURNING *;`;
+            const values = [ email, currentJobTitle, experience, currentCompany, noticePeriod, profilePicture, highestQualification, fieldOfStudy, instituteName, graduationYear, skills, portfolio, linkedin, github, otherProfile ];
+
+            const result = await executeQuery(insertQuery, values);
+            const newUserProfile = result[0];
+
+            res.status(201).json({
+                success: true,
+                message: "User profile created successfully",
+                userProfile: newUserProfile
+            });
+        }
+    } catch (error) {
+        console.error('Error creating or updating user profile:', error);
+        res.status(500).json({
+            success: false,
+            message: "Failed to create or update user profile."
+        });
+    }
+};

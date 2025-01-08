@@ -10,7 +10,9 @@ const {
     verifyToken,
     createUser,
     createEmployer,
-    postJob
+    postJob,
+    getUserProfile,
+    editUserProfile
 } = require('../controllers/apiController');
 
 router.route('/get-dashboard').get(getdashboard);
@@ -30,5 +32,10 @@ router.route('/signup-user').post(createUser);
 router.route('/signup-employer').post(createEmployer);
 
 router.route('/create-job-post').post(authenticateJWT, postJob);
+
+router.route('/get-user-profile').get(authenticateJWT, getUserProfile);
+
+router.route('/edit-user-profile').post(authenticateJWT, editUserProfile);
+
 
 module.exports = router;

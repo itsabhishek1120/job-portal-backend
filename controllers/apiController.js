@@ -45,6 +45,14 @@ const postJob = (req, res, next) => {
     jobsModule.postJob(req, res, next);
 }
 
+const getUserProfile = (req, res, next) => {
+    usersModule.getUserProfile(req, res, next);
+}
+
+const editUserProfile = (req, res, next) => {
+    usersModule.editUserProfile(req, res, next);
+}
+
 module.exports = {
     getdashboard,
     postdashboard,
@@ -54,5 +62,7 @@ module.exports = {
     verifyToken,
     createUser,
     createEmployer,
-    postJob
+    postJob,
+    getUserProfile,
+    editUserProfile
 };
