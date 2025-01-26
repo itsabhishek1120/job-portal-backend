@@ -86,7 +86,8 @@ module.exports.createUser = async (req, res, next) => {
         
             res.status(201).json({
                 success: true,
-                message: 'Sign Up Successful'
+                message: 'Sign Up Successful',
+                token: token
             });
         } catch (error) {
             console.log('Error inserting user:', error);
@@ -146,7 +147,8 @@ module.exports.createEmployer = async (req, res, next) => {
         
             res.status(201).json({
                 success: true,
-                message: 'Sign Up Successful'
+                message: 'Sign Up Successful',
+                token: token
             });
         } catch (error) {
             console.log('Error Inserting Employer:', error);

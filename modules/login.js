@@ -31,14 +31,14 @@ module.exports.login = async (req, res, next) => {
         res.cookie('token', token, {
             httpOnly: false,  // Prevent access to the cookie via JavaScript
             secure: process.env.ENV !== "DEV", // Set Secure flag in production
-            sameSite: process.env.ENV === 'DEV' ? 'Strict' : 'Strict', // Controls cross-origin cookie sending
+            sameSite: process.env.ENV === 'DEV' ? 'Strict' : 'None', // Controls cross-origin cookie sending
             maxAge: 60 * 60 * 1000, // 1 hour expiry
         });
 
         res.status(200).json({
             success: true, 
             message: 'Loged In Successfully', 
-            // token: token 
+            token: token
         });
     }
 
