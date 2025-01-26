@@ -14,7 +14,7 @@ const port = (process.env.ENV == "DEV") ? 5000 : process.env.PORT;
 app.use(cookieParser());
 app.use(
     cors({
-      origin: (process.env.ENV == "DEV") ? "http://localhost:4200" : "https://job-market-insight.netlify.app",
+      origin: (process.env.ENV == "DEV") ? "http://localhost:4200" : process.env.FRONTEND_URL,
       credentials: true,
     })
   );
