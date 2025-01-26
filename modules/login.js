@@ -30,7 +30,7 @@ module.exports.login = async (req, res, next) => {
         console.log("secure>>>",process.env.ENV !== "DEV");
         res.cookie('token', token, {
             httpOnly: true,  // Prevent access to the cookie via JavaScript
-            secure: process.env.ENV !== "DEV", // Set Secure flag in production
+            secure: false, // Set Secure flag in production
             sameSite: 'None', // Controls cross-origin cookie sending
             maxAge: 60 * 60 * 1000, // 1 hour expiry
         });
