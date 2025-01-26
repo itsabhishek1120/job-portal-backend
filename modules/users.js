@@ -80,7 +80,7 @@ module.exports.createUser = async (req, res, next) => {
             res.cookie('token', token, {
                 httpOnly: true,
                 secure: process.env.ENV !== "DEV",
-                sameSite: process.env.ENV === 'DEV' ? 'Strict' : 'None',
+                sameSite: 'None',
                 maxAge: 60 * 60 * 1000, // 1 hour
             });
         
@@ -140,7 +140,7 @@ module.exports.createEmployer = async (req, res, next) => {
             res.cookie('token', token, {
                 httpOnly: true,
                 secure: process.env.ENV !== "DEV",
-                sameSite: process.env.ENV === 'DEV' ? 'Strict' : 'None',
+                sameSite: 'None',
                 maxAge: 60 * 60 * 1000, // 1 hour
             });
         

@@ -30,7 +30,7 @@ module.exports.login = async (req, res, next) => {
         res.cookie('token', token, {
             httpOnly: true,  // Prevent access to the cookie via JavaScript
             secure: process.env.ENV !== "DEV", // Set Secure flag in production
-            sameSite: process.env.ENV === 'DEV' ? 'Strict' : 'None', // Controls cross-origin cookie sending
+            sameSite: 'None', // Controls cross-origin cookie sending
             maxAge: 60 * 60 * 1000, // 1 hour expiry
         });
 
@@ -49,7 +49,7 @@ module.exports.logout = (req, res, next) => {
     res.clearCookie('token', {
         httpOnly: true,  // Prevent access to the cookie via JavaScript
         secure: process.env.ENV !== "DEV",  // Set Secure flag in production
-        sameSite: process.env.ENV === 'DEV' ? 'Strict' : 'None',  // Controls cross-origin cookie sending
+        sameSite: 'None',  // Controls cross-origin cookie sending
         maxAge: 0,  // Expire the cookie immediately
     });
 
