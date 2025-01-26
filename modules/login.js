@@ -29,7 +29,7 @@ module.exports.login = async (req, res, next) => {
         const token = jwt.sign({ id: userData.id, email: userData.email }, SECRET_KEY, { expiresIn: '1h' });
         console.log("secure>>>",process.env.ENV !== "DEV");
         res.cookie('token', token, {
-            httpOnly: true,  // Prevent access to the cookie via JavaScript
+            httpOnly: false,  // Prevent access to the cookie via JavaScript
             secure: false, // Set Secure flag in production
             sameSite: 'None', // Controls cross-origin cookie sending
             maxAge: 60 * 60 * 1000, // 1 hour expiry
